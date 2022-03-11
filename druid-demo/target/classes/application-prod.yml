@@ -1,0 +1,108 @@
+
+# 数据源配置
+spring:
+  datasource:
+    name: test
+    url: jdbc:mysql://localhost:3306/db_user?&allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSl=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    filters: stat,wall,log4j
+    # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    # 超过时间限制是否回收
+    removeAbandoned: true
+    # 超时时间；单位为秒。180秒=3分钟
+    removeAbandonedTimeout: 180
+    # 关闭abanded连接时输出错误日志
+    logAbandoned: true
+
+    ## 配置连接池信息
+    druid:
+      ## 初始化大小，最小，最大
+      initial-size: 5
+      min-idle: 5
+      max-active: 30
+      ## 配置获取连接等待超时的时间
+      max-wait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      time-between-eviction-runs-millis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      min-evictable-idle-time-millis: 300000
+      max-pool-prepared-statement-per-connection-size: 20
+      pool-prepared-statements: true
+      # 用来测试连接是否可用的SQL语句
+      validation-query: SELECT 1 FROM DUAL
+      # 应用向连接池申请连接，并且testOnBorrow为false时，连接池将会判断连接是否处于空闲状态，如果是，则验证这条连接是否可用
+      test-while-idle: true
+      # 如果为true，默认是false，应用向连接池申请连接时，连接池会判断这条连接是否是可用的
+      test-on-borrow: false
+      # 如果为true（默认false），当应用使用完连接，连接池回收连接的时候会判断该连接是否还可用
+      test-on-return: false
+
+      ######### 配置statViewFilter（配置Druid后台管理Servlet页面），用于展示Druid的统计信息
+      stat-view-servlet:
+        # sql监控开关
+        enabled: true
+        # 访问内置监控页面的路径，内置监控页面的首页是/druid/index.html
+        url-pattern: /druid/*
+        # 是否允许清空统计数据，重新计算  true:允许  false:不允许
+        reset-enable: true
+        # 配置监控页面访问账号密码
+        login-username: admin
+        login-password: admin
+        # 允许访问的地址，如果allow没有配置或者为空，则允许所有访问
+        allow: 127.0.0.1
+        # 拒绝访问的地址，deny优先于allow，如果在deny列表中，就算在allow列表中，也会被拒绝
+        deny:
+
+      ######### 配置WebStatFilter，用于采集web关联监控的数据#########
+      web-stat-filter:
+        # web url监控
+        enabled: true
+        # session监控
+        session-stat-enable: true
+        # session的最大个数，默认100
+        session-stat-max-count: 1000
+        # 过滤所有url
+        url-pattern: /*
+        # 排除一些不必要的url
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
+
+      # 自己配置监控统计拦截的filter
+      filter:
+        # 开启DruidDataSource的状态监控
+        stat:
+          enabled: true
+          db-type: mysql
+          # 开启慢sql监控，超过2s 就认为是慢sql，记录到日志中
+          log-slow-sql: true
+          slow-sql-millis: 2000
+
+    # 日志配置
+    #logging:
+    #日志文件
+    ##file:
+    #例1：使用相对路径,就会在项目根目录下生成一个info.log文件
+    #name: info.log
+    #例2：在项目根目录下生成一个logs文件夹，logs文件夹里面生成一个info.log文件
+    #name: logs/info.log
+    #例3：使用绝对路径，这样写会在D盘下创建一个logs文件夹，logs文件夹里面生成一个info.log文件。
+    ##name: D:/logs/info.log
+    #日志级别 root表示所有包，也可以单独配置具体包 fatal error warn info debug trace off
+    ##level:
+  ## root: info
+
+
+# 日志配置（xml扩展配置）
+
+logPath: /admin/logs/
+logName: admin
+logBusinessLevel: debug
+logRootLevel: info
+#logging:
+#  config: classpath:logback-spring.xml
+
+
